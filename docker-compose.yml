@@ -8,32 +8,22 @@ services:
       dockerfile: Dockerfile
       target: production
     container_name: qwen3-tts-api
-    network_mode: host
     ports:
-      - "8880:8880"
+      - "7654:7654"
     environment:
       - HOST=0.0.0.0
-      - PORT=8880
+      - PORT=7654
       - WORKERS=1
       - CORS_ORIGINS=*
       - TTS_BACKEND=official
       - TTS_WARMUP_ON_START=false
-      # When using device_ids filter, the GPU appears as device 0 inside container
-      - CUDA_VISIBLE_DEVICES=0
+      - CUDA_VISIBLE_DEVICES=7
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     volumes:
-      # Mount model cache for persistence
       - ~/.cache/huggingface:/home/appuser/.cache/huggingface
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['2']
-              capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:7654/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -45,12 +35,11 @@ services:
       context: .
       dockerfile: Dockerfile.vllm
     container_name: qwen3-tts-api-vllm
-    network_mode: host
     ports:
-      - "8880:8880"
+      - "7654:7654"
     environment:
       - HOST=0.0.0.0
-      - PORT=8880
+      - PORT=7654
       - WORKERS=1
       - CORS_ORIGINS=*
       - TTS_BACKEND=vllm_omni
@@ -59,6 +48,7 @@ services:
       - VLLM_WORKER_MULTIPROC_METHOD=spawn
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - HF_HOME=/root/.cache/huggingface
+      - CUDA_VISIBLE_DEVICES=0
     volumes:
       # Mount model cache for persistence
       - ~/.cache/huggingface:/root/.cache/huggingface
@@ -68,11 +58,11 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['2']
+              device_ids: ["7"]
               capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:7654/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -89,10 +79,10 @@ services:
     container_name: qwen3-tts-api-cpu
     network_mode: host
     ports:
-      - "8880:8880"
+      - "7654:7654"
     environment:
       - HOST=0.0.0.0
-      - PORT=8880
+      - PORT=7654
       - WORKERS=1
       - CORS_ORIGINS=*
       - TTS_BACKEND=official
@@ -100,7 +90,7 @@ services:
       - ~/.cache/huggingface:/home/appuser/.cache/huggingface
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:7654/health"]
       interval: 30s
       timeout: 10s
       retries: 3
