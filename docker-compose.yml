@@ -44,9 +44,7 @@ services:
       - CORS_ORIGINS=*
       - TTS_BACKEND=vllm_omni
       - TTS_WARMUP_ON_START=true
-      - TTS_MODEL_NAME=Qwen/Qwen3-TTS-12Hz-0.6B-Base
-#      - TTS_MODEL_NAME=Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice
-#      - TTS_MODEL_NAME=Qwen/Qwen3-TTS-12Hz-1.7B-Base
+      - TTS_MODEL_NAME=Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice
 #      - TTS_MODEL_NAME=Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice
       - VLLM_WORKER_MULTIPROC_METHOD=spawn
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
